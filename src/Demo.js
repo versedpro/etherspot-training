@@ -251,7 +251,9 @@ const Demo = () => {
   return (
     <div className="connect-div">
       <h1> Banana Rainbow Kit Plugin Example </h1>
-      <ConnectButton />
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "5px" }}>
+        <ConnectButton />
+      </div>
       {getWalletActions()}
       <h1> Output </h1>
       <div className="output-div">
