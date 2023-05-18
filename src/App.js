@@ -1,36 +1,47 @@
-import { useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import {
-  EtherspotBatches,
-  EtherspotBatch,
-  EtherspotTransaction,
-  useEtherspotUi,
-  useEtherspotAddresses,
-  EtherspotContractTransaction,
-  useEtherspotTransactions,
-} from "@etherspot/transaction-kit";
-const abi = require("./constants/NFTAbi.json");
+import "@rainbow-me/rainbowkit/styles.css";
+import Demo from "./Demo";
+import { RainbowKitProvider, connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { metaMaskWallet, injectedWallet, rainbowWallet, walletConnectWallet } from "@rainbow-me/rainbowkit/wallets";
+import { polygonMumbai, optimismGoerli, goerli } from "@wagmi/chains";
+import { publicProvider } from "wagmi/providers/public";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { BananaWallet } from "@rize-labs/banana-rainbowkit-plugin";
 
 function App() {
-  const { estimate, send } = useEtherspotTransactions();
-  const etherspotAddresses = useEtherspotAddresses();
+  const { chains, provider } = configureChains(
+    // currently on these three chains are supported by BananaWallet
+    [polygonMumbai, optimismGoerli, goerli],
+    [publicProvider()]
+  );
 
-  const [address, setAddress] = useState("0x271Ae6E03257264F0F7cb03506b12A027Ec53B31");
-  const [amount, setAmount] = useState("0.001");
+  const connectors = connectorsForWallets([
+    {
+      groupName: "Recommended",
+      wallets: [
+        BananaWallet({ chains, connect: { networkId: 80001 } }),
+        metaMaskWallet({ chains, shimDisconnect: true }),
+        rainbowWallet({ chains }),
+        walletConnectWallet({ chains }),
+        injectedWallet({ chains, shimDisconnect: true }),
+      ],
+    },
+  ]);
+
+  const wagmiClient = createClient({
+    autoConnect: true,
+    connectors,
+    provider,
+  });
 
   return (
-    <EtherspotBatches>
-      <EtherspotBatch>
-        <EtherspotContractTransaction
-          contractAddress={"0x9DC78b651F640244211c792a703fceD2c41F16f8"}
-          abi={abi}
-          methodName={"createEvent"}
-          params={["X", "https://ipfs.io/ipfs/bafybeicankr7uxlxbll6b3ohwi2dfnjyluq6w4epuohquebub47gcpqp5u/8953.jpg"]}
-          value={"0"}
-        />
-      </EtherspotBatch>
-    </EtherspotBatches>
+    <div className="App">
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider chains={chains}>
+          <Demo />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </div>
   );
 }
 
