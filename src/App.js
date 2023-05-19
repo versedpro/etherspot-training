@@ -28,6 +28,13 @@ const router = createBrowserRouter([
         },
       },
       {
+        path: "event/:id",
+        async lazy() {
+          let Event = await import("./pages/Event");
+          return { Component: Event.default };
+        },
+      },
+      {
         path: "*",
         element: <NoMatch />,
       },

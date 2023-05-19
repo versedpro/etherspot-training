@@ -1,17 +1,16 @@
-import { Box, Button, Container, Stack, TextField, Typography } from "@mui/material";
+import { Box, Container, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSigner } from "wagmi";
 import * as Yup from "yup";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
-
-const ABI = require("../constants/NFTAbi.json");
-const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS_CHIADO;
+import { ABI, CONTRACT_ADDRESS } from "../utils/web3";
 
 export default function Home() {
+  const navigate = useNavigate();
   const { data: signer } = useSigner();
   const [loading, setLoading] = useState(false);
 
@@ -30,14 +29,13 @@ export default function Home() {
       try {
         const parentEventId = parseInt(ethers.utils.formatEther(await contract.getParentEventId(values.eventId)));
         const childEventIds = await contract.getChildEvents(values.eventId);
-        console.log(childEventIds);
 
         if (parentEventId === 0) {
           toast.info("Your Event is parent Event");
-          redirect(`/event/${values.eventId}`);
+          navigate(`/event/${values.eventId}`);
         } else {
           toast.info("Your Event has parent Event");
-          redirect(`/event/${parentEventId}/${values.eventId}`);
+          navigate(`/event/${parentEventId}/${values.eventId}`);
         }
       } catch (err) {
         helpers.setStatus({ success: false });
