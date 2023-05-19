@@ -3,9 +3,9 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { ethers } from "ethers";
 import { useSigner, useProvider, useAccount } from "wagmi";
 import { useState, useEffect } from "react";
-// import { ERC_20_ABI } from "./constants/abi";
 import "./App.css";
-const ERC_20_ABI = require("./constants/NFTAbi.json");
+import Mint from "./components/Mint";
+const NFT_ABI = require("./constants/NFTAbi.json");
 
 const Demo = () => {
   const { isConnected } = useAccount();
@@ -202,7 +202,7 @@ const Demo = () => {
         gasLimit: "0x55555",
         to: daiContractAddress,
         value: 0,
-        data: new ethers.utils.Interface(ERC_20_ABI).encodeFunctionData("transfer", [toAddress, amount.toHexString()]),
+        data: new ethers.utils.Interface(NFT_ABI).encodeFunctionData("transfer", [toAddress, amount.toHexString()]),
       };
 
       //@ts-ignore
@@ -224,9 +224,6 @@ const Demo = () => {
     }
     return (
       <>
-        {/* <Box marginBottom="4">
-              <Text>Please open your browser dev inspector to view output of functions below</Text>
-            </Box> */}
         <button className="action-btn" onClick={() => getChainID()}>
           ChainID
         </button>
@@ -236,14 +233,13 @@ const Demo = () => {
         <button className="action-btn" onClick={() => getBalance()}>
           Get Balance
         </button>
-
         <button className="action-btn" onClick={() => signMessage()}>
           Sign Message
         </button>
-
         <button className="action-btn" onClick={() => sendETH()}>
           Send ETH
         </button>
+        <Mint />
       </>
     );
   };
