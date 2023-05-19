@@ -31,11 +31,13 @@ const Mint = () => {
     initialValues: {
       name: "",
       filePath: null,
+      parentId: "",
       submit: null,
     },
     validationSchema: Yup.object({
       name: Yup.string().max(255).required("Asset Name is required"),
       // filePathe: Yup.string().max(255).required("Asset path is required"),
+      parentId: Yup.number(),
     }),
     onSubmit: async (values, helpers) => {
       if (!values.filePath) {
@@ -47,11 +49,15 @@ const Mint = () => {
       setIsFetching(true);
 
       try {
+        const method = values.parentId ? "addChildEvent" : "createEvent";
+        const param = values.parentId
+          ? [values.parentId, values.name, values.filePath]
+          : [values.name, values.filePath];
         const tx = {
           gasLimit: "0x55555",
           to: NFTAddress,
           value: 0,
-          data: new ethers.utils.Interface(nft_abi).encodeFunctionData("createEvent", [values.name, values.filePath]),
+          data: new ethers.utils.Interface(nft_abi).encodeFunctionData(method, param),
         };
         const txnResp = await signer.sendTransaction(tx);
         await txnResp.wait();
@@ -196,6 +202,17 @@ const Mint = () => {
               onChange={formik.handleChange}
               sx={{ width: "35%" }}
             />
+            <Typography sx={{ mt: 2 }}>If you want to add child Event, please input parent Event ID</Typography>
+            <TextField
+              placeholder="1"
+              name="parentId"
+              label="Parent Event ID"
+              helperText={formik.touched.parentId && formik.errors.parentId}
+              value={formik.values.parentId}
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              sx={{ width: "35%" }}
+            />
           </Stack>
           {formik.errors.submit && (
             <Typography textAlign="center" color="error" sx={{ mt: 3 }} variant="body2">
@@ -204,7 +221,7 @@ const Mint = () => {
           )}
           <Stack spacing={2} sx={{ mb: 3, display: "flex", justifyContent: "center" }} direction="row">
             <LoadingButton loading={isFetching} sx={{ padding: 1, width: "35%" }} type="submit" variant="contained">
-              Mint NFT
+              {formik.values.parentId ? "Add Child Event" : "Mint NFT"}
             </LoadingButton>
           </Stack>
         </form>
