@@ -24,11 +24,12 @@ export default function Header() {
               </Link>
             </Button>
             <Button>
-              <Link to="/about" className="link">
-                About
+              <Link to="/mint" className="link">
+                Mint
               </Link>
             </Button>
           </Typography>
+
           <ConnectButton />
         </Toolbar>
       </AppBar>

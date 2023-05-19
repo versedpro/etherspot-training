@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { create } from "ipfs-http-client";
 import { useSigner } from "wagmi";
 import { ethers } from "ethers";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const projectId = process.env.REACT_APP_INFURA_PROJECT_ID;
 const projectSecret = process.env.REACT_APP_INFURA_PROJECT_SECRET;
@@ -113,7 +114,9 @@ const Mint = () => {
       >
         <form noValidate onSubmit={formik.handleSubmit}>
           <Stack spacing={1} sx={{ mb: 3 }}>
-            <Typography variant="h6">Image, Video, Audio</Typography>
+            <Typography variant="h6" textAlign="center">
+              Image
+            </Typography>
             <Box display="flex" justifyContent="center">
               <div style={{ width: "fit-content" }}>
                 <input
