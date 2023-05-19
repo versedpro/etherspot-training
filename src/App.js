@@ -3,7 +3,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import Demo from "./Demo";
 import { RainbowKitProvider, connectorsForWallets } from "@rainbow-me/rainbowkit";
 import { metaMaskWallet, injectedWallet, rainbowWallet, walletConnectWallet } from "@rainbow-me/rainbowkit/wallets";
-import { polygonMumbai, optimismGoerli, goerli } from "@wagmi/chains";
+import { polygonMumbai, optimismGoerli, goerli, gnosisChiado } from "@wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { BananaWallet } from "@rize-labs/banana-rainbowkit-plugin";
@@ -11,7 +11,7 @@ import { BananaWallet } from "@rize-labs/banana-rainbowkit-plugin";
 function App() {
   const { chains, provider } = configureChains(
     // currently on these three chains are supported by BananaWallet
-    [polygonMumbai, optimismGoerli, goerli],
+    [polygonMumbai, optimismGoerli, goerli, gnosisChiado],
     [publicProvider()]
   );
 
