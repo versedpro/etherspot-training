@@ -27,14 +27,15 @@ export default function Home() {
     onSubmit: async (values, helpers) => {
       setLoading(true);
       try {
-        const parentEventId = parseInt(ethers.utils.formatEther(await contract.getParentEventId(values.eventId)));
+        const parentEvent = await contract.getParentEventId(values.eventId);
+        const parentEventId = parentEvent.toNumber();
         const childEventIds = await contract.getChildEvents(values.eventId);
 
         if (parentEventId === 0) {
           toast.info("Your Event is parent Event");
           navigate(`/event/${values.eventId}`);
         } else {
-          toast.info("Your Event has parent Event");
+          toast.info(`Your Event has parent Event. Parent Event: ${parentEventId}`);
           navigate(`/event/${parentEventId}/${values.eventId}`);
         }
       } catch (err) {

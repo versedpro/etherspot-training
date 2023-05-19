@@ -33,6 +33,15 @@ const router = createBrowserRouter([
           let Event = await import("./pages/Event");
           return { Component: Event.default };
         },
+        children: [
+          {
+            path: ":id",
+            async lazy() {
+              let Event = await import("./pages/Event");
+              return { Component: Event.default };
+            },
+          },
+        ],
       },
       {
         path: "*",
