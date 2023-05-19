@@ -25,18 +25,27 @@ const Mint = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       name: "",
-      filePath: "",
+      filePath: null,
       submit: null,
     },
     validationSchema: Yup.object({
       name: Yup.string().max(255).required("Asset Name is required"),
-      filePathe: Yup.string().max(255).required("Asset path is required"),
+      // filePathe: Yup.string().max(255).required("Asset path is required"),
     }),
     onSubmit: async (values, helpers) => {
+      if (!values.filePath) {
+        helpers.setStatus({ success: false });
+        helpers.setErrors({ submit: "Upload asset first" });
+        return;
+      }
+
+      setIsFetching(true);
+
       try {
         const tx = {
           gasLimit: "0x55555",
@@ -58,6 +67,7 @@ const Mint = () => {
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
+      setIsFetching(false);
     },
   });
 
@@ -188,14 +198,14 @@ const Mint = () => {
             />
           </Stack>
           {formik.errors.submit && (
-            <Typography color="error" sx={{ mt: 3 }} variant="body2">
+            <Typography textAlign="center" color="error" sx={{ mt: 3 }} variant="body2">
               {formik.errors.submit}
             </Typography>
           )}
           <Stack spacing={2} sx={{ mb: 3, display: "flex", justifyContent: "center" }} direction="row">
-            <Button sx={{ padding: 1, width: "35%" }} type="submit" variant="contained">
+            <LoadingButton loading={isFetching} sx={{ padding: 1, width: "35%" }} type="submit" variant="contained">
               Mint NFT
-            </Button>
+            </LoadingButton>
           </Stack>
         </form>
       </Box>

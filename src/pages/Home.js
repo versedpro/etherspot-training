@@ -1,9 +1,22 @@
 import { Box, Button, Container, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { redirect } from "react-router-dom";
+import { useSigner } from "wagmi";
 import * as Yup from "yup";
+import { ethers } from "ethers";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
+
+const ABI = require("../constants/NFTAbi.json");
+const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS_CHIADO;
 
 export default function Home() {
+  const { data: signer } = useSigner();
+  const [loading, setLoading] = useState(false);
+
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
   const formik = useFormik({
     initialValues: {
       eventId: "",
@@ -13,16 +26,32 @@ export default function Home() {
       eventId: Yup.number().max(255).required("Please input your desird ID to navigate"),
     }),
     onSubmit: async (values, helpers) => {
+      setLoading(true);
       try {
-        redirect(`/event/${values.eventId}`);
+        const parentEventId = parseInt(ethers.utils.formatEther(await contract.getParentEventId(values.eventId)));
+        const childEventIds = await contract.getChildEvents(values.eventId);
+        console.log(childEventIds);
+
+        if (parentEventId === 0) {
+          toast.info("Your Event is parent Event");
+          redirect(`/event/${values.eventId}`);
+        } else {
+          toast.info("Your Event has parent Event");
+          redirect(`/event/${parentEventId}/${values.eventId}`);
+        }
       } catch (err) {
-        console.log(err);
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        if (err.message.includes("reverted")) {
+          toast.error("Check if your event is valid or Mint a new one");
+        } else {
+          helpers.setErrors({ submit: err.message });
+        }
         helpers.setSubmitting(false);
       }
+      setLoading(false);
     },
   });
+
   return (
     <Container>
       <Box
@@ -48,14 +77,17 @@ export default function Home() {
             />
           </Stack>
           {formik.errors.submit && (
-            <Typography color="error" sx={{ mt: 3 }} variant="body2">
+            <Typography textAlign="center" color="error" sx={{ mt: 3 }} variant="body2">
               {formik.errors.submit}
             </Typography>
           )}
           <Stack spacing={2} sx={{ mb: 3, display: "flex", justifyContent: "center" }} direction="row">
-            <Button sx={{ padding: 1, width: "35%" }} type="submit" variant="contained">
+            {/* <Button sx={{ padding: 1, width: "35%" }} type="submit" variant="contained">
               Navigate
-            </Button>
+            </Button> */}
+            <LoadingButton loading={loading} type="submit" variant="contained" sx={{ padding: 1, width: "35%" }}>
+              Navigate
+            </LoadingButton>
           </Stack>
         </form>
       </Box>

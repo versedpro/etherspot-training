@@ -1,6 +1,6 @@
 import "./App.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import { RainbowKitProvider, connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider, connectorsForWallets, lightTheme } from "@rainbow-me/rainbowkit";
 import { metaMaskWallet, injectedWallet, rainbowWallet, walletConnectWallet } from "@rainbow-me/rainbowkit/wallets";
 import { polygonMumbai, optimismGoerli, goerli, gnosisChiado } from "@wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
 function App() {
   const { chains, provider } = configureChains(
     // currently on these three chains are supported by BananaWallet
-    [polygonMumbai, optimismGoerli, goerli, gnosisChiado],
+    [gnosisChiado],
     [publicProvider()]
   );
 
@@ -65,7 +65,16 @@ function App() {
     <div className="App">
       <CssBaseline />
       <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
+        <RainbowKitProvider
+          chains={chains}
+          coolMode
+          theme={lightTheme({
+            accentColor: "#623485", //color of wallet  try #703844
+            accentColorForeground: "white", //color of text
+            borderRadius: "large", //rounded edges
+            fontStack: "system",
+          })}
+        >
           <RouterProvider router={router} fallbackElement={<p>Loading...</p>}></RouterProvider>
         </RainbowKitProvider>
       </WagmiConfig>
