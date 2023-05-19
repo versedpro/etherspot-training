@@ -7,6 +7,24 @@ import { polygonMumbai, optimismGoerli, goerli, gnosisChiado } from "@wagmi/chai
 import { publicProvider } from "wagmi/providers/public";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { BananaWallet } from "@rize-labs/banana-rainbowkit-plugin";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Layout from "./components/Layout";
+import NoMatch from "./pages/NoMatch";
+import { CssBaseline } from "@mui/material";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [{ index: true, element: <Demo /> }],
+  },
+  {
+    path: "*",
+    element: <NoMatch />,
+  },
+]);
 
 function App() {
   const { chains, provider } = configureChains(
@@ -36,11 +54,13 @@ function App() {
 
   return (
     <div className="App">
+      <CssBaseline />
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider chains={chains}>
-          <Demo />
+          <RouterProvider router={router} fallbackElement={<p>Loading...</p>}></RouterProvider>
         </RainbowKitProvider>
       </WagmiConfig>
+      <ToastContainer />
     </div>
   );
 }
