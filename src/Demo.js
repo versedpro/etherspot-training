@@ -1,10 +1,8 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { ethers } from "ethers";
 import { useSigner, useProvider, useAccount } from "wagmi";
 import { useState, useEffect } from "react";
 import "./App.css";
-import Mint from "./components/Mint";
 const NFT_ABI = require("./constants/NFTAbi.json");
 
 const Demo = () => {
@@ -239,7 +237,6 @@ const Demo = () => {
         <button className="action-btn" onClick={() => sendETH()}>
           Send ETH
         </button>
-        <Mint />
       </>
     );
   };
@@ -247,9 +244,6 @@ const Demo = () => {
   return (
     <div className="connect-div">
       <h1> Banana Rainbow Kit Plugin Example </h1>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "5px" }}>
-        <ConnectButton />
-      </div>
       {getWalletActions()}
       <h1> Output </h1>
       <div className="output-div">
