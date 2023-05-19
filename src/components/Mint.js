@@ -45,6 +45,12 @@ const Mint = () => {
         };
         const txnResp = await signer.sendTransaction(tx);
         await txnResp.wait();
+
+        toast.success(`Mint success`);
+
+        helpers.resetForm();
+        setFileUrl(null);
+        fileRef.current.value = null;
       } catch (err) {
         console.log(err);
         helpers.setStatus({ success: false });
