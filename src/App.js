@@ -44,6 +44,13 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: "events",
+        async lazy() {
+          let Events = await import("./pages/Events");
+          return { Component: Events.default };
+        },
+      },
+      {
         path: "*",
         element: <NoMatch />,
       },
