@@ -28,6 +28,11 @@ export default function Header() {
                 Mint
               </Link>
             </Button>
+            <Button>
+              <Link to="/events" className="link">
+                Events
+              </Link>
+            </Button>
           </Typography>
 
           <ConnectButton />
